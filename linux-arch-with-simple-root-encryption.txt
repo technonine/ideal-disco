@@ -130,3 +130,6 @@ shutdown now
 # https://wiki.archlinux.org/index.php/GRUB
 # https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Alternative_installation_methods
 # https://wiki.archlinux.org/index.php/Fstab
+
+# This gist is what gave me the idea to create this and also the example on which I based it:
+# https://gist.github.com/mattiaslundberg/8620837
