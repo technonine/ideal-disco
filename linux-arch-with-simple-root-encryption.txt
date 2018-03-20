@@ -48,7 +48,7 @@ cfdisk /dev/sdX
 
 #format the first and second partition accordingly
 mkfs.vfat -F32 /dev/sdX1
-mkfs.ext2 /dev/sdX2
+mkfs.ext4 /dev/sdX2
 
 # Setup the encryption of the system
 cryptsetup -v luksFormat -y --use-random -s 512 --type luks2 /dev/sdX3
@@ -64,8 +64,8 @@ mount /dev/sdX2 /mnt/boot
 mkdir /mnt/boot/efi
 mount /dev/sdX1 /mnt/boot/efi
 
-# Thing I use for a fully functional system. everything after efibootmgr is not required and can be altered to your situation. 
-pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant python3 python-pip 
+# Things I use for a fully functional system. everything after efibootmgr is not required and can be altered to your situation. 
+pacstrap /mnt base grub-efi-x86_64 efibootmgr base-devel zsh git dialog wpa_supplicant networkmanager dhclient 
 
 # 'install' fstab
 genfstab -pU /mnt >> /mnt/etc/fstab
@@ -130,6 +130,7 @@ shutdown now
 # https://wiki.archlinux.org/index.php/GRUB
 # https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Alternative_installation_methods
 # https://wiki.archlinux.org/index.php/Fstab
+# https://wiki.archlinux.org/index.php/NetworkManager
 
 # This gist is what gave me the idea to create this and also the example on which I based it:
 # https://gist.github.com/mattiaslundberg/8620837
