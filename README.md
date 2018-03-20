@@ -2,7 +2,7 @@
 Descriptions of setting up various installations on linux. 
 
 This is basically a storage repo where I will store scripts/instructions for setting up a fully diskencrypted bootable usb.
-The goal is to have the install be able to for example run a lamp configuration or allow remote ssh on the pc it is booted from.
+The goal is to have the install be able to for example run a lamp configuration or allow remote ssh on the pc it is booted from. I will however also store other random things here like a simple backup/mirroring scripts.
 
 FAQ:
 
