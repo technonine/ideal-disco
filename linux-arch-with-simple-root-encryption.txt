@@ -29,33 +29,36 @@ open rufus, select the right usb and iso (disk button at the bottom right), copy
 
 # if you cannot reach the address, check the sources below for setting up an internet connection.
 
-# Create partitions
-cgdisk /dev/sdX
-1 100MB EFI partition # Hex code ef00
-2 250MB Boot partition # Hex code 8300
-3 100% size partiton # (to be encrypted) Hex code 8300
+# set the correct time
+	timedatectl list-timezones #to find your timezone if you dont know it.
+	timedatectl set-timezone [timezone]
+	timedatectl set-ntp true
 
+#to find the correct disk and uuids
+lsblk -f
+
+#TODO a low lv way of creating a new disk.
+
+#alternately, a simpler method using cfdisk:
+wipefs --all /dev/sdX
+cfdisk /dev/sdX
+# Select GPT and then create a first primary partition of 100M, set the type to EFI partition
+# create a second partition of 250M and a third with the leftover space, both as a linux file system.
+# write the filesystem and quit.
+
+#format the first and second partition accordingly
 mkfs.vfat -F32 /dev/sdX1
 mkfs.ext2 /dev/sdX2
 
 # Setup the encryption of the system
-cryptsetup -c aes-xts-plain64 -y --use-random luksFormat /dev/sdX3
+cryptsetup -v luksFormat -y --use-random -s 512 --type luks2 /dev/sdX3
 cryptsetup luksOpen /dev/sdX3 luks
 
-# Create encrypted partitions
-# This creates one partions for root, modify if /home or other partitions should be on separate partitions
-pvcreate /dev/mapper/luks
-vgcreate vg0 /dev/mapper/luks
-lvcreate --size 8G vg0 --name swap
-lvcreate -l +100%FREE vg0 --name root
-
 # Create filesystems on encrypted partitions
-mkfs.ext4 /dev/mapper/vg0-root
-mkswap /dev/mapper/vg0-swap
+mkfs.ext4 /dev/mapper/luks
 
 # Mount the new system 
-mount /dev/mapper/vg0-root /mnt # /mnt is the installed system
-swapon /dev/mapper/vg0-swap # Not needed but a good thing to test
+mount /dev/mapper/luks /mnt # /mnt is the installed system
 mkdir /mnt/boot
 mount /dev/sdX2 /mnt/boot
 mkdir /mnt/boot/efi
@@ -63,7 +66,7 @@ mount /dev/sdX1 /mnt/boot/efi
 
 # Install the system also includes stuff needed for starting wifi when first booting into the newly installed system
 # Unless vim and zsh are desired these can be removed from the command
-pacstrap /mnt base base-devel grub-efi-x86_64 zsh vim git efibootmgr dialog wpa_supplicant
+pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant apache php php-apache mariadb python3 python-pip xorg xfce4 intel-ucode 
 
 # 'install' fstab
 genfstab -pU /mnt >> /mnt/etc/fstab
@@ -118,6 +121,10 @@ shutdown now
 
 #sources:
 # https://wiki.archlinux.org/index.php/Installation_guide
-# https://wiki.archlinux.org/index.php/Network_configuration for wired devices
-# https://wiki.archlinux.org/index.php/Wireless_network_configuration for wireless devices.
-
+# https://wiki.archlinux.org/index.php/Network_configuration #for wired devices
+# https://wiki.archlinux.org/index.php/Wireless_network_configuration #for wireless devices.
+# https://jlk.fjfi.cvut.cz/arch/manpages/man/timedatectl.1 #setting time and date command
+# https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Simple_partition_layout_with_LUKS
+https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption#Encryption_options_for_LUKS_mode
+https://wiki.archlinux.org/index.php/GRUB
+https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Alternative_installation_methods
