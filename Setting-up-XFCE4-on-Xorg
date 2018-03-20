@@ -1,5 +1,5 @@
 #start with installing the packages:
-pacman -s xorg xfce4 xfce4-goodies intel-ucode light-dm
+pacman -s xorg  xfce4 xfce4-goodies intel-ucode light-dm network-manager-applet
 
 # sources
 # https://wiki.archlinux.org/index.php/Xorg
