@@ -1,1 +1,8 @@
+#start with installing the packages:
+pacman -s xorg xfce4 xfce4-goodies intel-ucode light-dm
+
 # sources
+# https://wiki.archlinux.org/index.php/Xorg
+# https://wiki.archlinux.org/index.php/Desktop_environment
+# https://wiki.archlinux.org/index.php/Display_manager
+# https://wiki.archlinux.org/index.php/LightDM
