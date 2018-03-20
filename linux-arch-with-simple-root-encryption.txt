@@ -3,12 +3,12 @@
 
 # Download the archiso image from https://www.archlinux.org/
 # Copy to a usb-drive
-dd if=archlinux.img of=/dev/sdX bs=16M && sync # on linux
+	dd if=/path/to/archlinux/iso of=/dev/sdX bs=8M && sync # on linux
 
 # on windows I recommend using rufus (https://rufus.akeo.ie/)
-open rufus, select the right usb and iso (disk button at the bottom right), copy using dd
+	open rufus, select the right usb and iso (disk button at the bottom right), copy using dd
 
-#Reboot your pc from the usb (if you cannot boot the system from the usb, check that secure boot is disabled from the bios and try enabling booting from usb). 
+#Reboot your pc from the usb (if you cannot boot the system from the usb, check that secure boot is disabled from the bios and 		try enabling booting from usb). 
 
 # Set up a wifi connection, if you are wired skip to the test connection part. 
 	iw dev #check the interface of your wireless card.
