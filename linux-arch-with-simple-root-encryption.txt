@@ -64,49 +64,51 @@ mount /dev/sdX2 /mnt/boot
 mkdir /mnt/boot/efi
 mount /dev/sdX1 /mnt/boot/efi
 
-# Install the system also includes stuff needed for starting wifi when first booting into the newly installed system
-# Unless vim and zsh are desired these can be removed from the command
-pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant apache php php-apache mariadb python3 python-pip xorg xfce4 intel-ucode 
+# Thing I use for a fully functional system. everything after efibootmgr is not required and can be altered to your situation. 
+pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant python3 python-pip xorg xfce4 intel-ucode 
 
 # 'install' fstab
 genfstab -pU /mnt >> /mnt/etc/fstab
 # Make /tmp a ramdisk (add the following line to /mnt/etc/fstab)
-tmpfs	/tmp	tmpfs	defaults,noatime,mode=1777	0	0
-# Change relatime on all non-boot partitions to noatime (reduces wear if using an SSD)
+echo "tmpfs	/tmp	tmpfs	defaults,noatime,mode=1777	0	0" >> /mnt/etc/fstab
+# Change relatime on all non-boot partitions to noatime 
+# reduces wear if using an SSD by not writing down the acces time everytime a file is read. 
 
 # Enter the new system
 arch-chroot /mnt /bin/bash
 
 # Setup system clock
-ln -s /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
+#replace Europe/Amsterdam by the same zone you entered when setting the time in the beginning
+rm /etc/localtime
+ln -s /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime 
 hwclock --systohc --utc
 
 # Set the hostname
 echo MYHOSTNAME > /etc/hostname
 
 # Update locale
+# uncomment en_US.UTF-8 and other things you need from /etc/locale.gen and run:
+locale-gen
+#add additional things
 echo LANG=en_US.UTF-8 >> /etc/locale.conf
 echo LANGUAGE=en_US >> /etc/locale.conf
-echo LC_ALL=C >> /etc/locale.conf
 
 # Set password for root
 passwd
 
-# Add real user remove -s flag if you don't whish to use zsh
-# useradd -m -g users -G wheel -s /bin/zsh MYUSERNAME
-# passwd MYUSERNAME
-
 # Configure mkinitcpio with modules needed for the initrd image
 vim /etc/mkinitcpio.conf
 # Add 'ext4' to MODULES
-# Add 'encrypt' and 'lvm2' to HOOKS before filesystems
-
-# Regenerate initrd image
+# Look at block in HOOKS and Add 'keyboard' before it and 'encrypt' after it (add 'keymap' after keyboard if you do not have default US keymapping). ... keyboard block encrypt filesystem ...
+# And regenerate the image:
 mkinitcpio -p linux
 
 # Setup grub
-grub-install
-In /etc/default/grub edit the line GRUB_CMDLINE_LINUX to GRUB_CMDLINE_LINUX="cryptdevice=/dev/sdX3:luks:allow-discards" then run:
+grub-install --removable
+# In /etc/default/grub edit the line GRUB_CMDLINE_LINUX 
+nano /etc/default/grub
+#change the line to: GRUB_CMDLINE_LINUX="cryptdevice=UUID=device-UUID:cryptroot root=/dev/mapper/cryptroot"
+# here device-uuid is the uuid tag of the actual partition /dev/sdX3 (the crypto_LUKS partition), you can find it quickly by opening a second tty and typing lsblk -f.
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Exit new system and go into the cd shell
@@ -114,9 +116,8 @@ exit
 
 # Unmount all partitions
 umount -R /mnt
-swapoff -a
 
-# Reboot into the new system, don't forget to remove the cd/usb
+#shutdown and try booting into the new system, don't forget to remove the cd/usb
 shutdown now
 
 #sources:
@@ -125,6 +126,7 @@ shutdown now
 # https://wiki.archlinux.org/index.php/Wireless_network_configuration #for wireless devices.
 # https://jlk.fjfi.cvut.cz/arch/manpages/man/timedatectl.1 #setting time and date command
 # https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Simple_partition_layout_with_LUKS
-https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption#Encryption_options_for_LUKS_mode
-https://wiki.archlinux.org/index.php/GRUB
-https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Alternative_installation_methods
+# https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption#Encryption_options_for_LUKS_mode
+# https://wiki.archlinux.org/index.php/GRUB
+# https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Alternative_installation_methods
+# https://wiki.archlinux.org/index.php/Fstab
