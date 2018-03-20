@@ -5,6 +5,7 @@ This is basically a storage repo where I will store scripts/instructions for set
 The goal is to have the install be able to for example run a lamp configuration or allow remote ssh on the pc it is booted from.
 
 FAQ:
+
 Q: Why are you going through all this effort?
 A: Because I find it fun to mess around with these things and wonder just how far I can go.
 
