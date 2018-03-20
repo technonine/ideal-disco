@@ -65,7 +65,7 @@ mkdir /mnt/boot/efi
 mount /dev/sdX1 /mnt/boot/efi
 
 # Thing I use for a fully functional system. everything after efibootmgr is not required and can be altered to your situation. 
-pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant python3 python-pip xorg xfce4 intel-ucode 
+pacstrap /mnt base base-devel grub-efi-x86_64 efibootmgr zsh git dialog wpa_supplicant python3 python-pip 
 
 # 'install' fstab
 genfstab -pU /mnt >> /mnt/etc/fstab
