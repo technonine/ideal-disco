@@ -1,2 +1,7 @@
+#Lets start with installing the packages:
+pacman -s apache php apache-php mariadb
+
 # Sources:
-# 
+# https://wiki.archlinux.org/index.php/Apache_HTTP_Server
+# https://wiki.archlinux.org/index.php/PHP
+# https://wiki.archlinux.org/index.php/MySQL
