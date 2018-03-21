@@ -65,7 +65,7 @@ mkdir /mnt/boot/efi
 mount /dev/sdX1 /mnt/boot/efi
 
 # Things I use for a fully functional system. everything after efibootmgr is not required and can be altered to your situation. 
-pacstrap /mnt base grub-efi-x86_64 efibootmgr base-devel zsh git dialog wpa_supplicant networkmanager dhclient 
+pacstrap /mnt base grub-efi-x86_64 efibootmgr base-devel zsh git dialog wpa_supplicant networkmanager dhclient iw
 
 # 'install' fstab
 genfstab -pU /mnt >> /mnt/etc/fstab
